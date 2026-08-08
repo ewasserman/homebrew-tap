@@ -12,7 +12,7 @@ class Vmd < Formula
   def install
     # Built from source on the user's machine: no download quarantine, so the
     # ad-hoc-signed app runs without Apple notarization.
-    system "make", "app", "SWIFT_FLAGS=--disable-sandbox"
+    system "make", "app", "SWIFT_FLAGS=--disable-sandbox", "VERSION=#{version}"
     libexec.install "dist/VMD.app"
     bin.install ".build/release/vmd"
   end
