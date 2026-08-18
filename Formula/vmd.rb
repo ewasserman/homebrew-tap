@@ -1,8 +1,8 @@
 class Vmd < Formula
   desc "Markdown viewer for macOS: GFM, mermaid, KaTeX math, live reload, CLI"
   homepage "https://github.com/ewasserman/vmd"
-  url "https://github.com/ewasserman/vmd/archive/refs/tags/v1.3.0.tar.gz"
-  sha256 "a40e8e95174d750e29303b8f657fd6a50888dc822d7d699b39d8c1649c0fdfe2"
+  url "https://github.com/ewasserman/vmd/archive/refs/tags/v1.4.0.tar.gz"
+  sha256 "9f474159a938812e4d2728edb7f6f1d76187d566c41608a01ece68f6b8fc2e29"
   license "MIT"
   head "https://github.com/ewasserman/vmd.git", branch: "main"
 
