@@ -18,10 +18,24 @@ class Vmd < Formula
   end
 
   def post_install
+    lsregister = "/System/Library/Frameworks/CoreServices.framework/Frameworks/" \
+                 "LaunchServices.framework/Support/lsregister"
+
+    # On `brew upgrade` this runs while the previous version's keg is still on
+    # disk (brew removes old kegs afterwards, or never with
+    # HOMEBREW_NO_INSTALL_CLEANUP). Unregister those copies so Launch Services
+    # only knows about this one. A user's default handler for markdown is
+    # stored by bundle id, so it moves over to this version on its own.
+    rack.subdirs.each do |keg|
+      next if keg == prefix
+
+      old_app = keg/"libexec/VMD.app"
+      quiet_system lsregister, "-u", old_app if old_app.exist?
+    end
+
     # Register the app (and its markdown document type) with Launch Services
     # so `vmd` and Finder's "Open With" find it immediately.
-    system "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister",
-           "-f", "#{libexec}/VMD.app"
+    system lsregister, "-f", "#{libexec}/VMD.app"
   end
 
   def caveats
