@@ -17,27 +17,6 @@ class Vmd < Formula
     bin.install ".build/release/vmd"
   end
 
-  def post_install
-    lsregister = "/System/Library/Frameworks/CoreServices.framework/Frameworks/" \
-                 "LaunchServices.framework/Support/lsregister"
-
-    # On `brew upgrade` this runs while the previous version's keg is still on
-    # disk (brew removes old kegs afterwards, or never with
-    # HOMEBREW_NO_INSTALL_CLEANUP). Unregister those copies so Launch Services
-    # only knows about this one. A user's default handler for markdown is
-    # stored by bundle id, so it moves over to this version on its own.
-    rack.subdirs.each do |keg|
-      next if keg == prefix
-
-      old_app = keg/"libexec/VMD.app"
-      quiet_system lsregister, "-u", old_app if old_app.exist?
-    end
-
-    # Register the app (and its markdown document type) with Launch Services
-    # so `vmd` and Finder's "Open With" find it immediately.
-    system lsregister, "-f", "#{libexec}/VMD.app"
-  end
-
   def caveats
     <<~EOS
       VMD.app lives inside the Homebrew prefix:
@@ -46,6 +25,13 @@ class Vmd < Formula
       The vmd CLI finds it there automatically. To also see it in
       Launchpad and Finder, link it into /Applications:
         ln -sf "#{opt_libexec}/VMD.app" /Applications/VMD.app
+
+      Homebrew cannot register apps with macOS during install, so after
+      installing or upgrading, run the CLI once:
+        vmd -v
+      Any vmd command registers this version of VMD.app with macOS, so
+      Finder's "Open With" lists it and, if VMD is your default app for
+      markdown, double-clicking a .md file opens this version.
     EOS
   end
 
